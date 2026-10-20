@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 128 744 612" fill="none">
+  <title>Alpha Search</title>
+  <defs>
+    <linearGradient id="as-g" x1="80" y1="700" x2="770" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c2561b"/><stop offset=".55" stop-color="#e2701f"/><stop offset="1" stop-color="#f59a2c"/>
+    </linearGradient>
+    <!-- one band: the alpha's tail, its loop, then the shaft rising into the arrow -->
+    <path id="as-p" d="M654 760 L348 261.5 L193.5 261.5 L113.5 369 L113.5 562.5 L195 669 L334 669 L830 42"/>
+    <!-- where the shaft crosses over the tail: knock-out, and a slightly longer redraw so no seam shows -->
+    <path id="as-x" d="M405.2 578.9 L560.2 382.9"/>
+    <path id="as-y" d="M403.4 581.2 L562.2 380.5"/>
+    <path id="as-z" d="M400 585.5 L565.6 376.2"/>
+    <clipPath id="as-c"><path d="M0 0 H500 V189.4 L765 148 L760 724 H0 Z"/></clipPath>
+    <mask id="as-m1" maskUnits="userSpaceOnUse" x="0" y="0" width="900" height="900">
+      <g clip-path="url(#as-c)" stroke-linejoin="miter" stroke-miterlimit="4">
+        <use href="#as-p" stroke="#fff" stroke-width="118"/>
+        <use href="#as-p" stroke="#000" stroke-width="74"/>
+        <use href="#as-x" stroke="#000" stroke-width="120"/>
+      </g>
+    </mask>
+    <mask id="as-m2" maskUnits="userSpaceOnUse" x="0" y="0" width="900" height="900">
+      <use href="#as-y" stroke="#fff" stroke-width="118"/>
+      <use href="#as-z" stroke="#000" stroke-width="74"/>
+    </mask>
+    <mask id="as-m3" maskUnits="userSpaceOnUse" x="0" y="0" width="900" height="900">
+      <rect width="900" height="900" fill="#fff"/>
+      <use href="#as-x" stroke="#000" stroke-width="120"/>
+    </mask>
+  </defs>
+  <rect width="900" height="900" fill="url(#as-g)" mask="url(#as-m1)"/>
+  <g clip-path="url(#as-c)">
+    <path d="M556 713 H694" stroke="url(#as-g)" stroke-width="22"/>
+    <!-- shaded outer edge of the tail gives the crossing its depth -->
+    <path d="M374.8 213.5 L700.5 744" stroke="#4d5446" stroke-width="22" mask="url(#as-m3)"/>
+  </g>
+  <rect width="900" height="900" fill="url(#as-g)" mask="url(#as-m2)"/>
+  <path d="M528 187 L763 151 L760 383" stroke="url(#as-g)" stroke-width="28" stroke-linejoin="miter"/>
+</svg>

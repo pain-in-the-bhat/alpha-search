@@ -160,9 +160,10 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewp
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f2f4"><tr><td align="center" style="padding:24px 12px">
 <table role="presentation" width="640" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;background:#ffffff;border:1px solid ${C.line};border-radius:8px">
 <tr><td style="padding:16px 24px;background:#0b0b0d;border-radius:8px 8px 0 0">
-  <span style="display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:5px;background:#ffa028;color:#140b00;font:700 14px ${MONO}">α</span>
-  <span style="font:600 12px ${MONO};letter-spacing:3px;color:#ececef;margin-left:8px;vertical-align:2px">ALPHA SEARCH</span>
-  <span style="font:11px ${MONO};color:#ffa028;margin-left:10px;vertical-align:2px">DAILY BRIEF · ${esc(nice(latest).toUpperCase())}</span>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+    <td valign="middle"><img src="cid:alpha-search-logo" width="138" height="36" alt="Alpha Search" style="display:block;border:0;color:#ececef;font:600 14px ${SANS}"></td>
+    <td valign="middle" align="right" style="font:11px ${MONO};letter-spacing:1px;color:#ffa028">DAILY BRIEF<br><span style="color:#b4b4bc">${esc(nice(latest).toUpperCase())}</span></td>
+  </tr></table>
 </td></tr>
 ${sections.join('\n')}
 <tr><td style="padding:24px">

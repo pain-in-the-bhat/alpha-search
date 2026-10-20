@@ -1,3 +1,5 @@
+<p><picture><source media="(prefers-color-scheme: dark)" srcset="assets/logo.png"><img src="assets/logo-light.png" width="320" alt="Alpha Search"></picture></p>
+
 # alpha-search
 
 Alpha Search is a momentum terminal (scanner, charts, backtest lab and position planner) for about 90 NSE stocks. It is an analysis tool, not investment advice.

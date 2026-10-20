@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Alpha Search mark, filled for small sizes (16 to 48 px); same geometry as icon.svg -->
+  <defs>
+    <linearGradient id="f-g" x1="80" y1="700" x2="770" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d0601c"/><stop offset="1" stop-color="#ffa52e"/>
+    </linearGradient>
+    <clipPath id="f-c"><path d="M0 0 H500 V189.4 L765 148 L760 724 H0 Z"/></clipPath>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0b0b0d"/>
+  <g transform="translate(2.6 -0.6) scale(.078)" fill="none" stroke-linejoin="miter" clip-path="url(#f-c)">
+    <path d="M654 760 L348 261.5 L193.5 261.5 L113.5 369 L113.5 562.5 L195 669 L334 669" stroke="url(#f-g)" stroke-width="96"/>
+    <path d="M360 636 L700 207" stroke="#0b0b0d" stroke-width="160"/>
+    <path d="M290 669 L334 669 L830 42" stroke="url(#f-g)" stroke-width="96"/>
+  </g>
+  <path transform="translate(2.6 -0.6) scale(.078)" d="M528 187 L763 151 L760 400" fill="none" stroke="url(#f-g)" stroke-width="64" stroke-linejoin="miter"/>
+</svg>

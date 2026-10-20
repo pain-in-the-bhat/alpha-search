@@ -34,6 +34,10 @@ def main():
     msg["Message-ID"] = make_msgid(domain=(env("MAIL_FROM") or user).split("@")[-1])
     msg.set_content(read("brief.txt"))
     msg.add_alternative(read("brief.html"), subtype="html")
+    logo = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "logo.png")
+    if os.path.exists(logo):  # inline, so it shows without "download pictures"
+        with open(logo, "rb") as f:
+            msg.get_payload()[1].add_related(f.read(), "image", "png", cid="<alpha-search-logo>", filename="alpha-search.png")
 
     ctx = ssl.create_default_context()
     if port == 465:

@@ -70,7 +70,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site
-          cp index.html engine.js stocks.enc _site/
+          cp -r index.html engine.js stocks.enc assets _site/
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
