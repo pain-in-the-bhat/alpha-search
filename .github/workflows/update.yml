@@ -1,0 +1,55 @@
+name: Update prices and deploy
+
+on:
+  schedule:
+    # 11:45 UTC = 5:15 pm IST, after the NSE close, Monday to Friday
+    - cron: "45 11 * * 1-5"
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Download prices
+        run: |
+          for i in 1 2 3; do python fetch_data.py --out stocks.csv && break; sleep 60; done
+          test -s stocks.csv
+      - name: Encrypt prices
+        env:
+          DESK_PASSWORD: ${{ secrets.DESK_PASSWORD }}
+        run: python seal.py stocks.csv stocks.enc
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp index.html stocks.enc _site/
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
