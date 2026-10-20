@@ -166,6 +166,8 @@ def main():
 
     if not frames:
         raise SystemExit("No data downloaded. Check your internet connection and the symbols.")
+    if len(frames) < 0.9 * len(syms):
+        raise SystemExit(f"Only {len(frames)} of {len(syms)} symbols downloaded. Refusing to write a partial file.")
     pd.concat(frames).to_csv(a.out, index=False)
     print("wrote", a.out, "with", len(frames), "symbols")
 

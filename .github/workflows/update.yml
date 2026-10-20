@@ -5,6 +5,11 @@ on:
     # 11:45 UTC = 5:15 pm IST, after the NSE close, Monday to Friday
     - cron: "45 11 * * 1-5"
   workflow_dispatch:
+    inputs:
+      send_brief:
+        description: "Email the daily brief"
+        type: boolean
+        default: true
   push:
     branches: [main]
 
@@ -19,7 +24,9 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    outputs:
+      send: ${{ steps.brief.outputs.send }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -31,6 +38,31 @@ jobs:
         run: |
           for i in 1 2 3; do python fetch_data.py --out stocks.csv && break; sleep 60; done
           test -s stocks.csv
+
+      # Yesterday's signals live in the Actions cache, which only this repo's workflows can read.
+      - name: Restore brief state
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: state
+          key: brief-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: brief-
+      - name: Build brief
+        id: brief
+        env:
+          BRIEF_RUN: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.send_brief) }}
+          BRIEF_FORCE: ${{ github.event_name == 'workflow_dispatch' }}
+          WATCHLIST: ${{ secrets.WATCHLIST }}
+          SITE_URL: https://pain-in-the-bhat.github.io/alpha-search/
+        run: |
+          mkdir -p state
+          rm -rf state/out
+          node brief.js stocks.csv state/state.json state/out
+      - name: Save brief state
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: state
+          key: brief-${{ github.run_id }}-${{ github.run_attempt }}
+
       - name: Encrypt prices
         env:
           DESK_PASSWORD: ${{ secrets.DESK_PASSWORD }}
@@ -38,7 +70,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site
-          cp index.html stocks.enc _site/
+          cp index.html engine.js stocks.enc _site/
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
@@ -46,10 +78,34 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+  email:
+    needs: [build, deploy]
+    if: needs.build.outputs.send == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Restore brief
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: state
+          key: brief-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
+      - name: Send brief
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+        run: python3 send_mail.py state/out
