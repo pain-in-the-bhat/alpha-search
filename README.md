@@ -1,6 +1,6 @@
 # alpha-search
 
-Alpha Search is a momentum scanner, backtest lab and position planner for about 90 NSE stocks. It is an analysis tool, not investment advice.
+Alpha Search is a momentum terminal (scanner, charts, backtest lab and position planner) for about 90 NSE stocks. It is an analysis tool, not investment advice.
 
 ## How it works
 
@@ -30,3 +30,8 @@ To change the password, update the secret and run the workflow. Browsers that st
     python -m http.server      # open http://localhost:8000
 
 With only `stocks.csv` present, the page skips the lock and loads it directly.
+
+## Keyboard
+
+- `⌘K` / `Ctrl K` or `/`: search tickers and views. `↵` opens the chart, `⇧↵` opens the planner.
+- `1` to `6`: Scanner, Chart, Planner, Backtest lab, Playbook, Data.
